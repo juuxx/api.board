@@ -31,17 +31,15 @@ public class BoardService {
 	public List<BoardListDto> findBoardList(String id) {
 		List<Board> all = boardRepository.findAll();
 		return all.stream()
-				.map(v -> v.fromEntity(id))
-				.collect(Collectors.toList());
+			.map(v -> v.fromEntity(id))
+			.collect(Collectors.toList());
 	}
 
 	@Transactional
 	public BoardDto findBoardById(Long boardId) {
 		Board board = findBoardByBoardId(boardId);
-
 		return board.toBoardDto();
 	}
-
 
 	@Transactional
 	public void writeBoard(RequestBoardDto requestBoardDto) {
@@ -63,6 +61,18 @@ public class BoardService {
 		boardRepository.delete(board);
 	}
 
+	@Transactional
+	public void likedBoard(Long boardId, String memberId) {
+		Board board = findBoardByBoardId(boardId);
+		Member member = findMemberByMemberId(memberId);
+
+		Set<Like> likes = findBoardByBoardId(boardId).getLikes();
+		likedProcess(memberId, board, member, likes);
+
+		board.updateLike(likes);
+		boardRepository.save(board);
+	}
+
 	private BoardDto toBoardDto(RequestBoardDto requestBoardDto) {
 		Member member = findMemberByMemberId(requestBoardDto.getWriter());
 		return new BoardDto(requestBoardDto.getTitle(), member, requestBoardDto.getContents(), new HashSet<>());
@@ -72,32 +82,33 @@ public class BoardService {
 		return memberRepository.findByAccountId(writer).orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
 	}
 
-
 	private Board findBoardByBoardId(Long boardId) {
 		return boardRepository.findById(boardId)
 			.orElseThrow(() -> new IllegalArgumentException("잘못된 boardId 입니다."));
 	}
 
-	@Transactional
-	public void likedBoard(Long boardId, String memberId) {
-
-		Board board = findBoardByBoardId(boardId);
-		Member member = findMemberByMemberId(memberId);
-
-		Set<Like> likes = findBoardByBoardId(boardId).getLikes();
-		boolean liked = false;
+	private void likedProcess(String memberId, Board board, Member member, Set<Like> likes) {
+		boolean myPushedLike = false;
 		for (Like like : likes) {
-			if (memberId.equals(like.memberId())) {
-				liked = true; //이미 좋아요 누른 상태
-				likes.remove(like);
-			}
+			myPushedLike = removeLike(memberId, likes, like);
 		}
 
-		if (!liked) {
-			likes.add(new Like(board, member));
+		if (!myPushedLike) {
+			addLike(board, member, likes);
 		}
-
-		board.updateLike(likes);
-		boardRepository.save(board);
 	}
+
+	private boolean removeLike(String memberId, Set<Like> likes, Like like) {
+		boolean pushedLike = false;
+		if (memberId.equals(like.memberId())) {
+			pushedLike = true; //이미 좋아요 누른 상태
+			likes.remove(like);
+		}
+		return pushedLike;
+	}
+
+	private void addLike(Board board, Member member, Set<Like> likes) {
+		likes.add(new Like(board, member));
+	}
+
 }
