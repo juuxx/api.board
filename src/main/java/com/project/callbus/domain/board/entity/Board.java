@@ -3,6 +3,7 @@ package com.project.callbus.domain.board.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,9 +18,12 @@ import com.project.callbus.domain.member.entity.Member;
 import com.project.callbus.web.dto.BoardDto;
 import com.project.callbus.web.dto.BoardListDto;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Entity
@@ -38,9 +42,30 @@ public class Board {
 	@Lob
 	private String contents;
 
-	@OneToMany(mappedBy = "board")
+	@OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true) //좋아요 누를 때 merge여야만 boardId, memberId가 들어가는 이유가 뭘까
 	private Set<Like> likes = new HashSet<>();
 
+	@Builder
+	public Board(String title, Member writer, String contents) {
+		this.title = title;
+		this.writer = writer;
+		this.contents = contents;
+	}
+
+	public Board(String title, Member writer, String contents, Set<Like> likes) {
+		this.title = title;
+		this.writer = writer;
+		this.contents = contents;
+		this.likes = likes;
+	}
+
+	public static Board toEntity(BoardDto boardDto) {
+		return new Board(boardDto.getTitle(), boardDto.getWriter(), boardDto.getContents(), new HashSet<>());
+	}
+
+	public void addLikes(Set<Like> likes) {
+		this.likes = likes;
+	}
 
 	public BoardListDto fromEntity(String memberId) {
 		return BoardListDto.builder()
@@ -58,6 +83,15 @@ public class Board {
 	}
 
 	public BoardDto toBoardDto() {
-		return new BoardDto();
+		return new BoardDto(title, writer, contents, likes);
+	}
+
+	public void update(BoardDto boardDto) {
+		title = boardDto.getTitle();
+		contents = boardDto.getContents();
+	}
+
+	public void updateLike(Set<Like> newLikes) {
+		likes = newLikes;
 	}
 }

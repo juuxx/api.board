@@ -1,7 +1,6 @@
 package com.project.callbus.common.config.security;
 
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -10,7 +9,7 @@ import org.springframework.util.StringUtils;
 
 import com.project.callbus.domain.member.entity.Member;
 import com.project.callbus.domain.member.repository.MemberRepository;
-import com.project.callbus.web.dto.CustomUserDetail;
+import com.project.callbus.common.config.security.dto.CustomUserDetail;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,12 +27,11 @@ public class CustomPreAuthenticationUserDetailService implements AuthenticationU
 			Member member = memberRepository.findByAccountId(name)
 				.orElseThrow(() -> new UsernameNotFoundException("사용자 정보를 찿을수 없습니다."));
 
-			return CustomUserDetail.builder().username(name).accountType(member.getAccountType().name()).build();
-			 // return User.builder()
-				// .roles(member.getAccountType().name())
-				// .username(name)
-				// .password("")
-				// .build();
+			return CustomUserDetail.builder()
+					.username(name)
+					.accountType(member.getAccountType().name())
+					.quit(member.getQuit())
+					.build();
 		}
 
 		return CustomUserDetail.builder()

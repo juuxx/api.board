@@ -1,5 +1,52 @@
-GET http://localhost:8080/api/v1/boardList
+### 비회원 게시판 조회
+GET http://localhost:9000/api/v1/board
 Accept: application/json
 Content-Type: application/json
 Authentication:
-###
+
+### 회원 게시판 목록 조회
+GET http://localhost:9000/api/v1/board
+Accept: application/json
+Content-Type: application/json
+Authentication: user124
+
+### 회원 게시글 조회
+GET http://localhost:9000/api/v1/board/3
+Accept: application/json
+Content-Type: application/json
+Authentication: user124
+
+### 게시판 글쓰기
+POST http://localhost:9000/api/v1/board
+Accept: application/json
+Content-Type: application/json
+Authentication: user124
+
+{
+  "title": "테스트 제목2",
+  "writer": "user124",
+  "contents": "test222"
+}
+
+### 게시글 수정
+PUT http://localhost:9000/api/v1/board/2
+Accept: application/json
+Content-Type: application/json
+Authentication: user124
+
+{
+  "title": "테스트 수정",
+  "contents": "수정된 텍스트 입니다."
+}
+
+### 게시글 삭제
+DELETE http://localhost:9000/api/v1/board/3
+Accept: application/json
+Content-Type: application/json
+Authentication: user124
+
+### 좋아요 테스트
+POST http://localhost:9000/api/v1/like/4/
+Accept: application/json
+Content-Type: application/json
+Authentication: user123

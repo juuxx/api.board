@@ -32,7 +32,7 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private AccountType accountType;
 
-	@Column
+	@Column(unique=true)
 	private String accountId;
 
 	@Column
@@ -40,9 +40,7 @@ public class Member {
 	private Quit quit;
 
 	@Builder
-	public Member(Long id, String nickname, AccountType accountType, String accountId,
-		Quit quit) {
-		this.id = id;
+	public Member(String nickname, AccountType accountType, String accountId, Quit quit) {
 		this.nickname = nickname;
 		this.accountType = accountType;
 		this.accountId = accountId;

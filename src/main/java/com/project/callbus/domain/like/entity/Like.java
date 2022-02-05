@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.callbus.domain.board.entity.Board;
 import com.project.callbus.domain.member.entity.Member;
 
@@ -34,6 +33,11 @@ public class Like {
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
+
+	public Like(Board board, Member member) {
+		this.board = board;
+		this.member = member;
+	}
 
 	public String memberId() {
 		return this.member.getAccountId();

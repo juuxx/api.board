@@ -32,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider(){
 		PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();
 		preAuthenticatedAuthenticationProvider.setPreAuthenticatedUserDetailsService(customPreAuthenticationUserDetailService);
+		preAuthenticatedAuthenticationProvider.setUserDetailsChecker(new CustomUserDetailChecker());
 		return preAuthenticatedAuthenticationProvider;
 	}
 
@@ -60,6 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		requestHeaderAuthenticationFilter.setPrincipalRequestHeader(SECURITY_HEADER); //인증정보가 담김 헤더 키 지정
 		requestHeaderAuthenticationFilter.setAuthenticationManager(authenticationManager()); //위에서 설정한 인증관리자 등록
 		requestHeaderAuthenticationFilter.setContinueFilterChainOnUnsuccessfulAuthentication(false); //실패시 계속 진행 여부
+		//requestHeaderAuthenticationFilter.setExceptionIfHeaderMissing();
+		//new ProviderManager(preAuthenticatedAuthenticationProvider())
 		return requestHeaderAuthenticationFilter;
 	}
 
@@ -74,6 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.anyRequest()
 			.authenticated()
 			.and()
+			.csrf().disable()
 			.addFilterAt(requestHeaderAuthenticationFilter(), RequestHeaderAuthenticationFilter.class);
 	}
 
