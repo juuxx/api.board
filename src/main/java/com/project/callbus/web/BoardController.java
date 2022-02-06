@@ -43,25 +43,28 @@ public class BoardController {
 	}
 
 	//글 쓰기
-	@PreAuthorize("!hasRole('ANONYMOUS')") //이거 안 먹음 header에 user정보 없어도 게시물 쓰기 가능
+	@PreAuthorize("!hasAnyAuthority('ROLE_ANONYMOUS')")
 	@PostMapping("/api/v1/board")
-	public void crateBoard(@RequestBody RequestBoardDto requestBoardDto) {
-		boardService.writeBoard(requestBoardDto);
+	public void crateBoard(@RequestBody RequestBoardDto requestBoardDto, @AuthenticationPrincipal CustomUserDetail customUserDetail) {
+		boardService.writeBoard(customUserDetail.getUsername(), requestBoardDto);
 	}
 
 	//글 수정
+	@PreAuthorize("!hasAnyAuthority('ROLE_ANONYMOUS')")
 	@PutMapping("/api/v1/board/{boardId}")
 	public void updateBoard(@PathVariable Long boardId, @RequestBody BoardDto boardDto) {
 		boardService.updateBoard(boardId, boardDto);
 	}
 
 	//글 삭제
+	@PreAuthorize("!hasAnyAuthority('ROLE_ANONYMOUS')")
 	@DeleteMapping("/api/v1/board/{boardId}")
 	public void deleteBoard(@PathVariable Long boardId) {
 		boardService.deleteBoard(boardId);
 	}
 
 	//좋아요 누르기
+	@PreAuthorize("!hasAnyAuthority('ROLE_ANONYMOUS')")
 	@PostMapping("/api/v1/like/{boardId}/") //왜 헤더에 다른 아이디 넣었는데 인식을 못하지..
 	public void likeBoard(@PathVariable Long boardId, @AuthenticationPrincipal CustomUserDetail customUserDetail){
 		boardService.likedBoard(boardId, customUserDetail.getUsername());

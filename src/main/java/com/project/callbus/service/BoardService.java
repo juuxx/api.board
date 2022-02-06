@@ -42,8 +42,8 @@ public class BoardService {
 	}
 
 	@Transactional
-	public void writeBoard(RequestBoardDto requestBoardDto) {
-		BoardDto boardDto = toBoardDto(requestBoardDto);
+	public void writeBoard(String memberId, RequestBoardDto requestBoardDto) {
+		BoardDto boardDto = toBoardDto(memberId, requestBoardDto);
 		Board board = Board.toEntity(boardDto);
 		boardRepository.save(board);
 	}
@@ -73,13 +73,13 @@ public class BoardService {
 		boardRepository.save(board);
 	}
 
-	private BoardDto toBoardDto(RequestBoardDto requestBoardDto) {
-		Member member = findMemberByMemberId(requestBoardDto.getWriter());
+	private BoardDto toBoardDto(String memberId, RequestBoardDto requestBoardDto) {
+		Member member = findMemberByMemberId(memberId);
 		return new BoardDto(requestBoardDto.getTitle(), member, requestBoardDto.getContents(), new HashSet<>());
 	}
 
-	private Member findMemberByMemberId(String writer) {
-		return memberRepository.findByAccountId(writer).orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
+	private Member findMemberByMemberId(String memberId) {
+		return memberRepository.findByAccountId(memberId).orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
 	}
 
 	private Board findBoardByBoardId(Long boardId) {

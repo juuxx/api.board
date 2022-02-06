@@ -6,8 +6,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
+
+import com.project.callbus.common.config.security.dto.CustomUserDetail;
 
 @EnableMethodSecurity
 @EnableWebSecurity
@@ -61,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		requestHeaderAuthenticationFilter.setPrincipalRequestHeader(SECURITY_HEADER); //인증정보가 담김 헤더 키 지정
 		requestHeaderAuthenticationFilter.setAuthenticationManager(authenticationManager()); //위에서 설정한 인증관리자 등록
 		requestHeaderAuthenticationFilter.setContinueFilterChainOnUnsuccessfulAuthentication(false); //실패시 계속 진행 여부
-		//requestHeaderAuthenticationFilter.setExceptionIfHeaderMissing();
+		requestHeaderAuthenticationFilter.setExceptionIfHeaderMissing(false);
 		//new ProviderManager(preAuthenticatedAuthenticationProvider())
 		return requestHeaderAuthenticationFilter;
 	}
@@ -75,11 +78,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 			.anyRequest()
-			.authenticated()
+			.permitAll()
 			.and()
 			.csrf().disable()
-			.addFilterAt(requestHeaderAuthenticationFilter(), RequestHeaderAuthenticationFilter.class);
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.anonymous()
+				.principal(anonymousPrincipal())
+			.authorities("ROLE_" + ROLE_ANONYMOUS)
+			.and()
+			.addFilterAt(requestHeaderAuthenticationFilter(), RequestHeaderAuthenticationFilter.class)
+		;
 	}
 
+	private Object anonymousPrincipal(){
+		return CustomUserDetail.builder()
+			.username(ROLE_ANONYMOUS)
+			.accountType(ROLE_ANONYMOUS)
+			.build();
+	}
 
 }
