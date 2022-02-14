@@ -25,6 +25,8 @@ public class Member {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	private String password;
+
 	@Column
 	private String nickname;
 
@@ -40,10 +42,11 @@ public class Member {
 	private Quit quit;
 
 	@Builder
-	public Member(String nickname, AccountType accountType, String accountId, Quit quit) {
+	public Member(String nickname, AccountType accountType, String accountId, String password, Quit quit) {
 		this.nickname = nickname;
 		this.accountType = accountType;
 		this.accountId = accountId;
+		this.password = password;
 		this.quit = quit;
 	}
 }

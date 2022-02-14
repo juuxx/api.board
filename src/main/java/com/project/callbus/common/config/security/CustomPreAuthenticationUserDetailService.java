@@ -35,7 +35,7 @@ public class CustomPreAuthenticationUserDetailService implements AuthenticationU
 		}
 
 		return CustomUserDetail.builder()
-			.accountType(SecurityConfig.ROLE_ANONYMOUS)
+			//.accountType(SecurityConfig.ROLE_ANONYMOUS)
 			.username("GUEST")
 			.build();
 
