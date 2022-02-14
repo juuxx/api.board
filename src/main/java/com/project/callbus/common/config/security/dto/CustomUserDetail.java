@@ -12,15 +12,17 @@ import lombok.Builder;
 public class CustomUserDetail implements UserDetails {
 
 	private String username;
+	private String password;
 	private String accountType;
 	private Quit quit;
 
 	@Builder
-	public CustomUserDetail(String username, String accountType, Quit quit) {
+	public CustomUserDetail(String username, String password, String accountType,
+		Quit quit) {
 		this.username = username;
+		this.password = password;
 		this.accountType = accountType;
 		this.quit = quit;
-
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class CustomUserDetail implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return null;
+		return this.password;
 	}
 
 	@Override

@@ -29,6 +29,7 @@ public class CustomPreAuthenticationUserDetailService implements AuthenticationU
 
 			return CustomUserDetail.builder()
 					.username(name)
+					.password(member.getPassword())
 					.accountType(member.getAccountType().name())
 					.quit(member.getQuit())
 					.build();

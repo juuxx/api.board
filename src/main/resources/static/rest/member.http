@@ -1,0 +1,11 @@
+### 회원가입
+POST http://localhost:9000/member
+Accept: application/json
+Content-Type: application/json
+
+{
+  "accountId": "test1234",
+  "password": "1234",
+  "nickname": "test-user",
+  "accountType": "LESSOR"
+}
