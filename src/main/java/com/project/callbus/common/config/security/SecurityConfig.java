@@ -47,18 +47,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/", "/login", "/home", "/member", "/api/v1/board").permitAll()
-			.antMatchers("/v3/api-docs/**").permitAll()
-			.antMatchers("/swagger-resources/**").permitAll()
-			.antMatchers("/swagger-ui/**").permitAll()
-			.anyRequest().authenticated()
+				.antMatchers("/", "/login", "/home", "/member", "/api/v1/board").permitAll()
+				.antMatchers("/v3/api-docs/**").permitAll()
+				.antMatchers("/swagger-resources/**").permitAll()
+				.antMatchers("/swagger-ui/**").permitAll()
+				.anyRequest().authenticated()
 			.and()
-			.formLogin()
-			.usernameParameter("accountId")
-			.successForwardUrl("/")
-			.permitAll()
+				.formLogin()
+				.usernameParameter("accountId")
+				.successForwardUrl("/")
+				.permitAll()
 			.and()
-			.logout()
-			.logoutSuccessUrl("/");
+				.logout()
+				.logoutSuccessUrl("/");
 	}
 }

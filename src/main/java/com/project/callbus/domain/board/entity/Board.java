@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 
 import com.project.callbus.domain.like.entity.Like;
 import com.project.callbus.domain.member.entity.Member;
-import com.project.callbus.web.dto.BoardDto;
+import com.project.callbus.web.dto.BoardResource;
 import com.project.callbus.web.dto.BoardListDto;
 
 import lombok.Builder;
@@ -59,8 +59,8 @@ public class Board {
 		this.likes = likes;
 	}
 
-	public static Board toEntity(BoardDto boardDto) {
-		return new Board(boardDto.getTitle(), boardDto.getWriter(), boardDto.getContents(), new HashSet<>());
+	public static Board toEntity(BoardResource boardResource) {
+		return new Board(boardResource.getTitle(), boardResource.getWriter(), boardResource.getContents(), new HashSet<>());
 	}
 
 	public void addLikes(Set<Like> likes) {
@@ -82,13 +82,13 @@ public class Board {
 					.anyMatch(v -> v.memberId().equals(memberId));
 	}
 
-	public BoardDto toBoardDto() {
-		return new BoardDto(title, writer, contents, likes);
-	}
+	// public BoardDto toBoardDto() {
+	// 	return new BoardDto(title, writer, contents, likes);
+	// }
 
-	public void update(BoardDto boardDto) {
-		title = boardDto.getTitle();
-		contents = boardDto.getContents();
+	public void update(BoardResource boardResource) {
+		title = boardResource.getTitle();
+		contents = boardResource.getContents();
 	}
 
 	public void updateLike(Set<Like> newLikes) {

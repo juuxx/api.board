@@ -8,7 +8,7 @@ Authentication:
 GET http://localhost:9000/api/v1/board
 Accept: application/json
 Content-Type: application/json
-Authentication: user124
+#Authentication: user124
 
 ### 회원 게시글 조회
 GET http://localhost:9000/api/v1/board/4
